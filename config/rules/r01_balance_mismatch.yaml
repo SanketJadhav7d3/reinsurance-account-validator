@@ -1,0 +1,10 @@
+id: R01
+name: Balance does not match its components
+detects: D01
+severity: error
+description: >
+  The balance on an account line must equal premium minus commission minus claims paid, within 0.01. Lines with a missing amount are left to R08.
+type: sql
+sql_file: sql/rules/r01_balance_mismatch.sql
+params:
+  tolerance: 0.01

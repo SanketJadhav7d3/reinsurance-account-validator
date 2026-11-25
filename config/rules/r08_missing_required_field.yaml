@@ -1,0 +1,8 @@
+id: R08
+name: Required field is missing
+detects: D08
+severity: error
+description: >
+  Treaty, period, currency, premium, commission, claims paid and balance must all be present.
+type: sql
+sql_file: sql/rules/r08_missing_required_field.sql

@@ -1,0 +1,9 @@
+id: R04
+name: Duplicate account line
+detects: D04
+severity: error
+description: >
+  The same treaty, period and amounts must not be reported twice. The earliest
+  submission is kept; every later copy is flagged.
+type: python
+function: rav.rules.checks.duplicate_lines

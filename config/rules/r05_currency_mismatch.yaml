@@ -1,0 +1,8 @@
+id: R05
+name: Currency differs from the treaty currency
+detects: D05
+severity: error
+description: >
+  The currency on an account line must equal the currency of its treaty.
+type: sql
+sql_file: sql/rules/r05_currency_mismatch.sql

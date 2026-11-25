@@ -1,0 +1,10 @@
+id: R02
+name: Commission rate differs from the treaty rate
+detects: D02
+severity: error
+description: >
+  Commission divided by premium must match the treaty commission rate within 0.5 percentage points.
+type: sql
+sql_file: sql/rules/r02_commission_off_terms.sql
+params:
+  rate_tolerance: 0.005

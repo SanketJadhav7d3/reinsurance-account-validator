@@ -5,6 +5,8 @@ import typer
 from rav import db
 from rav.generate import generate_dataset, inject_defects, write_dataset, write_ground_truth
 from rav.ingest import ingest_all
+from rav.rules.engine import run_rules
+from rav.rules.loader import load_rules
 
 app = typer.Typer(help="Reinsurance Account Validator. All data is synthetic.")
 
@@ -39,8 +41,12 @@ def ingest(incoming: Path = Path("data/incoming")) -> None:
 
 @app.command()
 def run() -> None:
-    """Run validation rules."""
-    raise typer.Exit(code=_todo("run"))
+    """Run all enabled validation rules and store findings."""
+    with db.connect() as conn:
+        run_id, counts = run_rules(conn, load_rules())
+    for rule_id, n in counts.items():
+        typer.echo(f"{rule_id}: {n} findings")
+    typer.echo(f"Run {run_id} complete: {sum(counts.values())} findings.")
 
 
 @app.command()

@@ -1,0 +1,8 @@
+id: R07
+name: Negative premium not marked as reversal
+detects: D07
+severity: error
+description: >
+  A negative premium is only valid when the line is flagged as a reversal.
+type: sql
+sql_file: sql/rules/r07_negative_premium_no_reversal.sql

@@ -1,0 +1,8 @@
+id: R09
+name: Period ends after the submission date
+detects: D09
+severity: error
+description: >
+  A cedent cannot report a period that has not ended by the date it submitted the account.
+type: sql
+sql_file: sql/rules/r09_future_period.sql

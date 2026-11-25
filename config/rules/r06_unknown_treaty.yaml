@@ -1,0 +1,8 @@
+id: R06
+name: Treaty is not in the master data
+detects: D06
+severity: error
+description: >
+  The treaty reference on an account line must exist in the treaty master data.
+type: sql
+sql_file: sql/rules/r06_unknown_treaty.sql
