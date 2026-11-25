@@ -1,8 +1,11 @@
+import json
 from pathlib import Path
 
 import typer
 
 from rav import db
+from rav.evaluate import DEFAULT_TRUTH, write_reports
+from rav.evaluate import evaluate as run_evaluation
 from rav.generate import generate_dataset, inject_defects, write_dataset, write_ground_truth
 from rav.ingest import ingest_all
 from rav.rules.engine import run_rules
@@ -24,6 +27,8 @@ def generate(
     defects = [] if no_defects else inject_defects(ds)
     files = write_dataset(ds, out)
     write_ground_truth(defects, Path(truth))
+    meta = Path(truth).parent / "meta.json"
+    meta.write_text(json.dumps({"seed": seed}) + "\n", encoding="utf-8")
     typer.echo(f"Wrote {len(files)} files to {out} (seed {seed}); {len(defects)} defects planted.")
 
 
@@ -50,9 +55,20 @@ def run() -> None:
 
 
 @app.command()
-def evaluate() -> None:
-    """Compare findings with planted defects."""
-    raise typer.Exit(code=_todo("evaluate"))
+def evaluate(
+    truth: Path = DEFAULT_TRUTH,
+    out: Path = Path("reports"),
+    run_id: int | None = None,
+) -> None:
+    """Compare findings with planted defects; write reports/evaluation.{md,json}."""
+    with db.connect() as conn:
+        result = run_evaluation(conn, load_rules(), truth, run_id)
+    write_reports(result, out)
+    o = result["overall"]
+    typer.echo(
+        f"TP {o['tp']}  FP {o['fp']}  FN {o['fn']}  "
+        f"precision {o['precision']}%  recall {o['recall']}%  -> {out}/evaluation.md"
+    )
 
 
 @app.command()
