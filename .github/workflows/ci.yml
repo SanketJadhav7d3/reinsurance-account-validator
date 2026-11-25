@@ -1,0 +1,24 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: rav
+          POSTGRES_PASSWORD: rav
+          POSTGRES_DB: rav
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U rav" --health-interval 5s --health-retries 10
+    env:
+      RAV_DATABASE_URL: postgresql://rav:rav@localhost:5432/rav
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run pytest
