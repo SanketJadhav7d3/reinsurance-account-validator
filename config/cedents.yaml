@@ -1,0 +1,82 @@
+# Per-cedent source format and column mapping (source header -> canonical column).
+# All cedents are fictional.
+cedents:
+  C1:
+    format: csv
+    delimiter: ","
+    date_format: "%Y-%m-%d"
+    decimal: "."
+    thousands: ""
+    true_values: ["true"]
+    columns:
+      line_ref: line_ref
+      treaty_id: treaty_id
+      period_start: period_start
+      period_end: period_end
+      currency: currency
+      premium: premium
+      commission: commission
+      claims_paid: claims_paid
+      balance: balance
+      is_reversal: is_reversal
+      submitted_on: submitted_on
+
+  C2:
+    format: csv
+    delimiter: ";"
+    date_format: "%d.%m.%Y"
+    decimal: ","
+    thousands: "."
+    true_values: ["ja"]
+    columns:
+      Referenz: line_ref
+      Vertrag: treaty_id
+      Periode_von: period_start
+      Periode_bis: period_end
+      Währung: currency
+      Prämie: premium
+      Provision: commission
+      Schadenzahlungen: claims_paid
+      Saldo: balance
+      Storno: is_reversal
+      Eingereicht_am: submitted_on
+
+  C3:
+    format: xlsx
+    header_row: 3 # row 1 title, row 2 merged "Amounts" group header, row 3 column names
+    date_format: "%Y-%m-%d"
+    decimal: "."
+    thousands: ""
+    true_values: ["yes"]
+    columns:
+      Line ref: line_ref
+      Treaty: treaty_id
+      From: period_start
+      To: period_end
+      Currency: currency
+      Premium: premium
+      Commission: commission
+      Claims paid: claims_paid
+      Balance: balance
+      Reversal: is_reversal
+      Submitted on: submitted_on
+
+  C4:
+    format: json
+    date_format: "%Y-%m-%d"
+    decimal: "."
+    thousands: ""
+    true_values: ["true"]
+    flip_claims: true # C4 reports claims paid as negative numbers
+    metadata_submitted_on: [submission, submitted_on]
+    columns:
+      line_ref: line_ref
+      treaty_id: treaty_id
+      period_start: period_start
+      period_end: period_end
+      currency: currency
+      premium: premium
+      commission: commission
+      claims_paid: claims_paid
+      balance: balance
+      is_reversal: is_reversal

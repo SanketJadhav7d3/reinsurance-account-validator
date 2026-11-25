@@ -2,7 +2,9 @@ from pathlib import Path
 
 import typer
 
+from rav import db
 from rav.generate import generate_dataset, write_dataset
+from rav.ingest import ingest_all
 
 app = typer.Typer(help="Reinsurance Account Validator. All data is synthetic.")
 
@@ -22,9 +24,15 @@ def generate(
 
 
 @app.command()
-def ingest() -> None:
-    """Load incoming files into PostgreSQL."""
-    raise typer.Exit(code=_todo("ingest"))
+def ingest(incoming: Path = Path("data/incoming")) -> None:
+    """Load incoming files into PostgreSQL (idempotent per source file)."""
+    with db.connect() as conn:
+        db.apply_schema(conn)
+        r = ingest_all(conn, incoming)
+    typer.echo(
+        f"Ingested {r.files} files: {r.loaded} lines loaded, "
+        f"{r.rejected} rows rejected, {r.bad_values} unparseable values (loaded as NULL)."
+    )
 
 
 @app.command()
