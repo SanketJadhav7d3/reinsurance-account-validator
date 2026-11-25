@@ -1,12 +1,24 @@
+from pathlib import Path
+
 import typer
+
+from rav.generate import generate_dataset, write_dataset
 
 app = typer.Typer(help="Reinsurance Account Validator. All data is synthetic.")
 
 
 @app.command()
-def generate(seed: int = 42, no_defects: bool = False) -> None:
+def generate(
+    seed: int = 42,
+    no_defects: bool = False,
+    out: Path = Path("data/incoming"),
+    treaties: int = 40,
+) -> None:
     """Generate synthetic treaties and cedent submissions."""
-    raise typer.Exit(code=_todo("generate"))
+    if not no_defects:
+        typer.echo("Defect injection arrives in milestone 4; writing clean data.")
+    files = write_dataset(generate_dataset(seed, treaties), out)
+    typer.echo(f"Wrote {len(files)} files to {out} (seed {seed}).")
 
 
 @app.command()
