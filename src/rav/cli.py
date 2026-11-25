@@ -4,6 +4,7 @@ from pathlib import Path
 import typer
 
 from rav import db
+from rav.docs import RULES_DOC, render_rules_md
 from rav.evaluate import DEFAULT_TRUTH, write_reports
 from rav.evaluate import evaluate as run_evaluation
 from rav.generate import generate_dataset, inject_defects, write_dataset, write_ground_truth
@@ -74,7 +75,9 @@ def evaluate(
 @app.command()
 def docs() -> None:
     """Generate docs/rules.md from rule config."""
-    raise typer.Exit(code=_todo("docs"))
+    RULES_DOC.parent.mkdir(parents=True, exist_ok=True)
+    RULES_DOC.write_text(render_rules_md(load_rules()), encoding="utf-8", newline="\n")
+    typer.echo(f"Wrote {RULES_DOC}")
 
 
 def _todo(name: str) -> int:
