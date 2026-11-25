@@ -155,10 +155,15 @@ def write_dataset(ds: Dataset, out_dir: Path) -> list[Path]:
                         t.term_start.isoformat(), t.term_end.isoformat(),
                         f"{t.commission_rate:.4f}"])  # fmt: skip
     written = [tpath]
+    cleaned: set[Path] = set()
     for sub in ds.submissions:
         writer, ext = WRITERS[sub.cedent_id]
         folder = out_dir / sub.cedent_id
         folder.mkdir(exist_ok=True)
+        if folder not in cleaned:
+            for stale in folder.glob(f"*.{ext}"):
+                stale.unlink()  # leftovers from another seed
+            cleaned.add(folder)
         path = folder / f"{sub.name}.{ext}"
         writer(sub, path)
         written.append(path)

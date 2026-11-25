@@ -3,7 +3,7 @@ from pathlib import Path
 import typer
 
 from rav import db
-from rav.generate import generate_dataset, write_dataset
+from rav.generate import generate_dataset, inject_defects, write_dataset, write_ground_truth
 from rav.ingest import ingest_all
 
 app = typer.Typer(help="Reinsurance Account Validator. All data is synthetic.")
@@ -15,12 +15,14 @@ def generate(
     no_defects: bool = False,
     out: Path = Path("data/incoming"),
     treaties: int = 40,
+    truth: str = "data/ground_truth/planted_defects.csv",
 ) -> None:
     """Generate synthetic treaties and cedent submissions."""
-    if not no_defects:
-        typer.echo("Defect injection arrives in milestone 4; writing clean data.")
-    files = write_dataset(generate_dataset(seed, treaties), out)
-    typer.echo(f"Wrote {len(files)} files to {out} (seed {seed}).")
+    ds = generate_dataset(seed, treaties)
+    defects = [] if no_defects else inject_defects(ds)
+    files = write_dataset(ds, out)
+    write_ground_truth(defects, Path(truth))
+    typer.echo(f"Wrote {len(files)} files to {out} (seed {seed}); {len(defects)} defects planted.")
 
 
 @app.command()
